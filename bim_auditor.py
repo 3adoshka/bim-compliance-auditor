@@ -69,3 +69,19 @@ if __name__ == "__main__":
     # Use our local test file or accept CLI argument
     target = sys.argv[1] if len(sys.argv) > 1 else "sample_model.ifc"
     audit_bim_model(target)
+import json
+from datetime import datetime
+
+def export_audit_summary(total_elements, violations_found, output_filename="audit_summary.json"):
+    """Exports a clean JSON summary of the BIM compliance audit."""
+    summary_data = {
+        "audit_timestamp": datetime.utcnow().isoformat() + "Z",
+        "total_elements_audited": int(total_elements),
+        "violations_flagged": int(violations_found),
+        "compliance_status": "PASS" if violations_found == 0 else "FAIL_REVIEW_REQUIRED",
+        "audited_by": "BIM Compliance Auditor Pipeline"
+    }
+    
+    with open(output_filename, "w") as f:
+        json.dump(summary_data, f, indent=4)
+    print(f"[*] Audit summary successfully exported to '{output_filename}'")
